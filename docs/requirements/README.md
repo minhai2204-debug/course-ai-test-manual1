@@ -18,7 +18,7 @@
 
 | Module | Prefix | Nền tảng | Trạng thái recon | Mức phủ tài liệu | Tài liệu | REQ đã dùng | Mã kế tiếp | AMB treo | Story | Cập nhật |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Đăng nhập (Login / Forgot Password) | `LOGIN` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng ¹ | — | — | `REQ-LOGIN-01` | — | — | 02-11-2026 |
+| Đăng nhập (Login / Forgot Password) | `LOGIN` | Web ✅ | ✅ Đã có tài liệu | ⬜ Trắng ¹ | [`login/REQUIREMENTS_LOGIN_SUMMARY.md`](login/REQUIREMENTS_LOGIN_SUMMARY.md) | 01 → 28 | `REQ-LOGIN-29` | 18 (🔴 7) — xem mục 3 | 5 | 02-11-2026 |
 | Khách hàng (Customers · Contacts) | `CUST` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-CUST-01` | — | — | 02-11-2026 |
 | Hàng hoá (Items) | `ITEM` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-ITEM-01` | — | — | 02-11-2026 |
 | Dự án (Projects) | `PRJ` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-PRJ-01` | — | — | 02-11-2026 |
@@ -43,9 +43,9 @@
 | Cấu hình hệ thống (Setup) | `SETTING` | Web ⬜ | ⏸️ Hoãn — BLOCKED, thiếu quyền Super Admin | ⬜ Trắng | — | — | `REQ-SETTING-01` | AMB-SYS-01 | — | 02-11-2026 |
 | Nhân viên & Vai trò (Staff · Roles) | `STAFF` | Web ⬜ | ⏸️ Hoãn — BLOCKED, thiếu quyền Super Admin | ⬜ Trắng | — | — | `REQ-STAFF-01` | AMB-SYS-01 | — | 02-11-2026 |
 
-¹ Repo có `SRS_Login_Module.md` (gốc repo) và `docs/SRS_Login_Module.txt` — **chưa nạp** vì đợt khám phá chạy mode UI theo chỉ định của user. Khi recon `LOGIN` có thể chạy HYBRID với tài liệu này.
+¹ Repo có `SRS_Login_Module.md` trong lịch sử git — user chọn **không dùng** khi recon `LOGIN` (mode UI, 02-11-2026).
 
-**Tổng: 24 module** — 22 ⬜ · 2 ⏸️ · 0 ✅.
+**Tổng: 24 module** — 21 ⬜ · 2 ⏸️ · 1 ✅.
 
 ### Danh sách prefix đã chiếm
 
@@ -56,11 +56,10 @@ Dành riêng: `SYS` (AMB/RISK cấp hệ thống — không cấp cho module).
 
 ## 2. Trạng thái REQ toàn hệ thống
 
-Chưa có module nào phát hành tài liệu requirements — chưa có REQ.
-
 | Module | 🟢 | 🟡 | 🔴 | ⚪ | Tổng |
 |---|---|---|---|---|---|
-| — | — | — | — | — | 0 |
+| `LOGIN` | 25 | 0 | 0 | 3 | 28 |
+| **Toàn hệ thống** | **25** | **0** | **0** | **3** | **28** |
 
 ## 3. Ambiguity 🔴 High còn treo
 
@@ -70,6 +69,13 @@ Chưa có module nào phát hành tài liệu requirements — chưa có REQ.
 | AMB-SYS-02 | Hệ thống có những **role** nào? Không mở được `/admin/roles` — mỗi role thiếu account sẽ thành `AMB-<MODULE>-XX` khi recon module | Ma trận phân quyền của mọi module | PO |
 | AMB-SYS-03 | 5 module đang **0 bản ghi** (Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base) — chưa thấy màn chi tiết; môi trường dùng chung nên không tự tạo | `TICK` · `SUBS` · `CRN` · `EREQ` · `KBASE` recon thiếu màn chi tiết | PO / QA Lead |
 | AMB-SYS-04 | Năng lực QA (gọi API · CSDL · tầng tích hợp · DevTools) chưa được xác nhận | Nhánh Vòng 3 của mọi bộ TC | QA Lead |
+| AMB-LOGIN-01 | Xin account Super Admin — kiểm chứng phân quyền đăng nhập | `LOGIN` | PO |
+| AMB-LOGIN-02 | Xin account nhân viên role khác — kiểm chứng phân quyền đăng nhập | `LOGIN` | PO |
+| AMB-LOGIN-03 | Contact khách hàng có đăng nhập được vào `/admin` không? | `LOGIN` — bảo mật phân tách 2 cổng | PO / Dev |
+| AMB-LOGIN-05 | Forgot Password bỏ trống trả "Email not found" thay vì thông báo bắt buộc | `LOGIN` — nghi lỗi | PO / Dev |
+| AMB-LOGIN-06 | Forgot Password tiết lộ email có tồn tại hay không | `LOGIN` — bảo mật | PO / Dev |
+| AMB-LOGIN-10 | Chính sách khoá tài khoản / giới hạn đăng nhập sai | `LOGIN` — chống brute-force | PO / Dev |
+| AMB-LOGIN-12 | Cookie `autologin` có khôi phục phiên không, hạn 62 ngày có đúng cấu hình? | `LOGIN` — REQ-LOGIN-16 ⚪ | Dev |
 
 ## 4. Cấu trúc thư mục chuẩn
 
@@ -107,3 +113,4 @@ docs/requirements/
 | Ngày | Thay đổi | Nguồn |
 |---|---|---|
 | 02-11-2026 | Khởi tạo danh mục — 24 module (22 ⬜ · 2 ⏸️), cấp 24 prefix. Bước 1 đối chiếu: chưa có `docs/requirements/` từ trước → không có lệch | `/discover-system` mode UI — khu admin, Chrome local, 25 ảnh evidence |
+| 02-11-2026 | `LOGIN` → ✅: phát hành `login/REQUIREMENTS_LOGIN_SUMMARY.md` + `login/web/` — REQ-LOGIN-01 → 28 · 18 AMB · 6 RISK · 5 Story | `/generate-requirements-from-website login` |

@@ -207,6 +207,7 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | Ngày | Mode · Mặt | Phạm vi | Kết quả | Nguồn |
 |---|---|---|---|---|
 | 02-11-2026 | UI · Web — Chrome local | Khu admin, 1 tài khoản admin (không phải Super Admin), viewport 1598×790 | 24 module · 24 prefix · 2 module BLOCKED · 25 ảnh evidence. Thay cho bản nháp cùng ngày khảo sát bằng Browser pane (không có ảnh, viewport hẹp) — bản nháp đã bỏ, không phát hành | UI thực tế — chỉ đọc |
+| 02-11-2026 | Recon module `LOGIN` | `/generate-requirements-from-website login` | Lệch so với bản đồ: ước 15–20 REQ, thực tế **28 REQ** (gồm Forgot Password, đăng xuất, cookie ghi nhớ, bảo vệ route). Route và ranh giới module không đổi | UI thực tế |
 
 ## Ambiguity & Risk cấp hệ thống
 
