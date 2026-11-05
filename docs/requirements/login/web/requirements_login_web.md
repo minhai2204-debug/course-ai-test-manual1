@@ -7,14 +7,14 @@
 | Thuộc tính | Giá trị |
 |---|---|
 | **Nền tảng** | Web — khu admin |
-| **REQ trong file** | `REQ-LOGIN-01` → `REQ-LOGIN-28` (28 REQ) |
+| **REQ trong file** | `REQ-LOGIN-01` → `REQ-LOGIN-34` (34 REQ) |
 | **Trình duyệt khảo sát** | Google Chrome 146 (headed, máy local, profile tạm), viewport `1598×790`, điều khiển qua Chrome DevTools Protocol. Mọi AC dựa trên thông báo mặc định của trình duyệt **chỉ đúng với trình duyệt này** |
 | **Phiên khảo sát** | Cửa sổ Chrome **tách biệt, không cookie** (browser context riêng) — không ảnh hưởng phiên khác. Các bước cần gõ mật khẩu do **user tự thao tác**; agent đọc DOM + chụp ảnh |
 | **Tầng network** | Quan sát thụ động request do UI phát sinh (`Network.*` của CDP). Không gọi API trực tiếp |
 | **Ngày** | 02-11-2026 |
 
 **Quy ước cột `Nguồn`:** `Kiểm chứng thực tế` = đã thao tác và xác nhận · `UI thực tế` = chỉ quan sát · `API · <method> <route> · <status>` = từ tầng network · `User thao tác` = bước do user gõ, agent quan sát kết quả.
-**Trạng thái ⚪ trong file này** = chưa kiểm chứng được trên môi trường dùng chung (skill 4.3.8), luôn kèm AMB.
+**Trạng thái ⚪ trong file này** = chưa kiểm chứng được trên môi trường dùng chung (skill 4.3.8), luôn kèm AMB. REQ-LOGIN-29 → 34 mô tả **Assumption tạm do user chốt** (05-11-2026), chưa ai quan sát hành vi này trên hệ thống — TC gắn nhãn `assumption-based`.
 
 ## 2. Yêu cầu chức năng
 
@@ -31,6 +31,10 @@
 | REQ-LOGIN-07 | Email không tồn tại → thông báo chung "Invalid email or password" | Thông báo không cho biết sai email hay sai mật khẩu | Email `recon.khongtontai@example.invalid` + mật khẩu bất kỳ → bấm `Login` → ở lại `/admin/authentication`, khối `.alert-danger` nội dung **"Invalid email or password"**. Trường hợp email tồn tại + sai mật khẩu chưa thử (AMB-LOGIN-11) | 🟢 | — | User thao tác · `login_invalid_credentials_viewport.png` |
 | REQ-LOGIN-08 | Máy chủ không giữ lại giá trị Email sau khi đăng nhập lỗi | Sau mỗi lần server trả lỗi, ô Email trống | Trong profile **không có autofill**: gửi form có Email hợp lệ nhưng lỗi (REQ-LOGIN-06 hoặc 07) → trang tải lại → `#email.value === ''`. Lưu ý: trình duyệt có autofill có thể tự điền lại — TC phải chạy trên profile sạch | 🟢 | — | Kiểm chứng thực tế (DOM) · `login_password_empty_viewport.png` |
 | REQ-LOGIN-14 | Form Login gửi kèm CSRF token | Chống giả mạo request | Form có `input[type=hidden][name=csrf_token_name]` với giá trị độ dài 32 ký tự (không chép giá trị). Request `POST /admin/authentication` có body gồm đúng các khoá `csrf_token_name, email, password` (khi không tick Remember me) | 🟢 | — | API · POST /admin/authentication · 200 |
+| REQ-LOGIN-29 | Contact khách hàng không đăng nhập được vào khu admin | Tài khoản cổng khách hàng không dùng được cho `/admin` | Dùng email + mật khẩu của một Contact → bấm `Login` ở `/admin/authentication` → ở lại trang, khối `.alert-danger` nội dung **"Invalid email or password"**. **Chưa kiểm chứng** — chưa có account Contact | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-03 | Assumption tạm AMB-LOGIN-03 |
+| REQ-LOGIN-30 | Email tồn tại + sai mật khẩu → thông báo chung "Invalid email or password" | Không lộ email có tồn tại hay không | Email tồn tại + mật khẩu sai → bấm `Login` → ở lại trang, khối `.alert-danger` nội dung **"Invalid email or password"**. **Chưa kiểm chứng**. Chỉ chạy trên tài khoản test riêng (RISK-LOGIN-01) | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-11 | Assumption tạm AMB-LOGIN-11 |
+| REQ-LOGIN-31 | Bỏ trống Email, có Password → chỉ hiện thông báo Email | Rule đối xứng với REQ-LOGIN-06 | Email trống + Password có giá trị → bấm `Login` → hiển thị **đúng một** khối `.alert-danger` nội dung **"The Email Address field is required."**. **Chưa kiểm chứng** | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-17 | Assumption tạm AMB-LOGIN-17 |
+| REQ-LOGIN-32 | Tài khoản bật 2FA phải nhập mã sau mật khẩu | Nhánh đăng nhập khi bật Email 2FA hoặc Google Authenticator | Tài khoản test đã bật 2FA + đăng nhập đúng mật khẩu → hiển thị bước nhập mã, **chưa** vào Dashboard. **Chưa kiểm chứng**: nội dung màn hình và luồng chi tiết chưa từng được quan sát | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-15 | Assumption tạm AMB-LOGIN-15 |
 
 ### STORY-LOGIN-02 — Phiên & điều hướng
 
@@ -48,6 +52,7 @@
 |---|---|---|---|---|---|---|
 | REQ-LOGIN-15 | Tick Remember me khi đăng nhập tạo cookie `autologin` | Tác tạo của tính năng ghi nhớ — **được tạo đúng hình thái** | (1) Phiên không cookie, (2) xác nhận chưa có cookie `autologin` (chỉ có `csrf_cookie_name`, `sp_session`), (3) tick `Remember me` + đăng nhập đúng, (4) có cookie `autologin`: domain của hệ thống, path `/`, `Secure = true`, hạn ≈ **62 ngày** kể từ lúc đăng nhập, giá trị dài 110 ký tự (không chép giá trị) | 🟢 | — | User thao tác · cookie đọc qua CDP |
 | REQ-LOGIN-16 | Cookie `autologin` khôi phục phiên khi phiên chính hết hạn | Tác tạo **dùng được đúng mục đích** | Có `autologin` hợp lệ, xoá `sp_session` (hoặc đợi hết hạn) → mở `/admin/` → vào Dashboard không cần nhập lại mật khẩu. **Chưa kiểm chứng** (AMB-LOGIN-12) | ⚪ | — | Suy từ tên cookie — chưa kiểm chứng |
+| REQ-LOGIN-33 | Không tick Remember me thì không tạo cookie `autologin` | Ghi nhớ chỉ bật khi người dùng chọn | (1) Phiên không cookie, (2) xác nhận chưa có cookie `autologin`, (3) **không** tick `Remember me` + đăng nhập đúng, (4) không có cookie `autologin`. **Chưa kiểm chứng** | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-18 | Assumption tạm AMB-LOGIN-18 |
 
 ### STORY-LOGIN-04 — Quên mật khẩu
 
@@ -70,8 +75,9 @@
 | REQ-LOGIN-26 | Bấm Logout → về trang Login | Kết thúc phiên ngay, không hỏi xác nhận | Bấm `Logout` (khi không có timer đang chạy) → điểm dừng `/admin/authentication`, form Login hiển thị, không có hộp thoại xác nhận. Chỉ assert điểm dừng (AMB-LOGIN-09). Nhánh có timer đang chạy: AMB-LOGIN-14 | 🟢 | — | Kiểm chứng thực tế · API · GET /admin/authentication/logout → /admin/authentication · `logout_redirect_login_viewport.png` |
 | REQ-LOGIN-27 | Sau Logout, route admin yêu cầu đăng nhập lại | Phiên thật sự bị huỷ | Sau REQ-LOGIN-26 → mở `/admin/` → điểm dừng `/admin/authentication` | 🟢 | — | Kiểm chứng thực tế · API · GET /admin/ → /admin/authentication |
 | REQ-LOGIN-28 | Sau Logout, cookie `autologin` còn sót không khôi phục phiên | Đăng xuất vô hiệu hoá ghi nhớ đăng nhập dù cookie chưa bị xoá | (1) Đăng nhập có tick Remember me, (2) xác nhận cookie `autologin` tồn tại, (3) Logout, (4) xác nhận `autologin` **vẫn còn** trong trình duyệt, (5) mở `/admin/` → điểm dừng `/admin/authentication` (không tự đăng nhập lại). Việc cookie còn sót là RISK-LOGIN-03 | 🟢 | — | Kiểm chứng thực tế · cookie đọc qua CDP |
+| REQ-LOGIN-34 | Logout khi có timer đang chạy hiện popup cảnh báo, không đăng xuất | Tránh mất thời gian đang tính | Có timer đang chạy → bấm `Logout` → hiện popup cảnh báo, URL không đổi, vẫn đang đăng nhập. **Chưa kiểm chứng trên UI** — mới đọc mã JS `logout()` | ⚪ | 05-11-2026 · Giải quyết AMB-LOGIN-14 | Assumption tạm AMB-LOGIN-14 · mã JS phía client |
 
-> Tổng file: 28 REQ = 🟢 25 · ⚪ 3 (`REQ-LOGIN-16, 23, 24`).
+> Tổng file: 34 REQ = 🟢 25 · ⚪ 9 (`REQ-LOGIN-16, 23, 24, 29 → 34`).
 
 ## 3. Đặc tả trường dữ liệu
 
@@ -107,6 +113,8 @@
 | REQ-LOGIN-06 | Login — Password trống | The Password field is required. | Khối `.alert.alert-danger` trên form |
 | REQ-LOGIN-05, 06 | Login — cả hai trống | Hai khối theo thứ tự: "The Password field is required." rồi "The Email Address field is required." | Thứ tự ngược ô trên form — AMB-LOGIN-04, TC không assert thứ tự |
 | REQ-LOGIN-07 | Login — email không tồn tại | Invalid email or password | Khối `.alert.alert-danger` |
+| REQ-LOGIN-30 | Login — email tồn tại, sai mật khẩu | Invalid email or password — ⚪ theo Assumption tạm, chưa quan sát | Khối `.alert.alert-danger` |
+| REQ-LOGIN-31 | Login — Email trống, có Password | The Email Address field is required. — ⚪ theo Assumption tạm, chưa quan sát | Khối `.alert.alert-danger` |
 | REQ-LOGIN-20 | Forgot — Email trống | Email not found | Khối `.alert.alert-danger` |
 | REQ-LOGIN-21 | Forgot — email không tồn tại | Email not found | Khối `.alert.alert-danger` |
 | REQ-LOGIN-03, 19 | Email sai định dạng (cả hai form) | Thông báo của **trình duyệt** (Chrome 146): "Please include an '@' in the email address. 'abc' is missing an '@'." — **chỉ tham khảo, cấm assert** | Tooltip trình duyệt, không gửi request |
@@ -162,4 +170,4 @@ Thư mục [`evidence/`](evidence/) — Chrome 146, viewport 1598×790. Hậu t�
 | [logout_menu_open_viewport.png](evidence/logout_menu_open_viewport.png) | Dashboard | Dropdown avatar đang mở | 25 |
 | [logout_redirect_login_viewport.png](evidence/logout_redirect_login_viewport.png) | Login | Ngay sau Logout | 26 |
 
-Mọi ảnh đã được mở lại xác nhận đúng trạng thái. REQ không có ảnh (02, 03, 04, 11–15, 19, 27, 28) dựa trên đọc DOM / network / cookie có ghi số liệu trong AC; REQ ⚪ (16, 23, 24) chưa có bằng chứng.
+Mọi ảnh đã được mở lại xác nhận đúng trạng thái. REQ không có ảnh (02, 03, 04, 11–15, 19, 27, 28) dựa trên đọc DOM / network / cookie có ghi số liệu trong AC; REQ ⚪ (16, 23, 24, 29 → 34) chưa có bằng chứng.

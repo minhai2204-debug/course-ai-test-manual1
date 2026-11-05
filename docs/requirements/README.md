@@ -18,7 +18,7 @@
 
 | Module | Prefix | Nền tảng | Trạng thái recon | Mức phủ tài liệu | Tài liệu | REQ đã dùng | Mã kế tiếp | AMB treo | Story | Cập nhật |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Đăng nhập (Login / Forgot Password) | `LOGIN` | Web ✅ | ✅ Đã có tài liệu | ⬜ Trắng ¹ | [`login/REQUIREMENTS_LOGIN_SUMMARY.md`](login/REQUIREMENTS_LOGIN_SUMMARY.md) | 01 → 28 | `REQ-LOGIN-29` | 16 (🔴 5) — xem mục 3 | 5 | 05-11-2026 |
+| Đăng nhập (Login / Forgot Password) | `LOGIN` | Web ✅ | ✅ Đã có tài liệu | ⬜ Trắng ¹ | [`login/REQUIREMENTS_LOGIN_SUMMARY.md`](login/REQUIREMENTS_LOGIN_SUMMARY.md) | 01 → 34 | `REQ-LOGIN-35` | 0 — 16 AMB ⏭️ theo Assumption tạm | 5 | 05-11-2026 |
 | Khách hàng (Customers · Contacts) | `CUST` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-CUST-01` | — | — | 02-11-2026 |
 | Hàng hoá (Items) | `ITEM` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-ITEM-01` | — | — | 02-11-2026 |
 | Dự án (Projects) | `PRJ` | Web ⬜ | ⬜ Chưa khảo sát | ⬜ Trắng | — | — | `REQ-PRJ-01` | — | — | 02-11-2026 |
@@ -58,8 +58,8 @@ Dành riêng: `SYS` (AMB/RISK cấp hệ thống — không cấp cho module).
 
 | Module | 🟢 | 🟡 | 🔴 | ⚪ | Tổng |
 |---|---|---|---|---|---|
-| `LOGIN` | 25 | 0 | 0 | 3 | 28 |
-| **Toàn hệ thống** | **25** | **0** | **0** | **3** | **28** |
+| `LOGIN` | 25 | 0 | 0 | 9 | 34 |
+| **Toàn hệ thống** | **25** | **0** | **0** | **9** | **34** |
 
 ## 3. Ambiguity 🔴 High còn treo
 
@@ -68,11 +68,8 @@ Dành riêng: `SYS` (AMB/RISK cấp hệ thống — không cấp cho module).
 | AMB-SYS-01 | Tài khoản admin trong `.env` bị `Access denied` ở toàn bộ khu Setup, Staff, Roles, Activity Log, trong khi user xác nhận (05-11-2026) tạm thời hệ thống chỉ có role admin. Tài khoản nào mở được các khu này, hay quyền của tài khoản hiện tại đang thiếu? | `SETTING` · `STAFF` BLOCKED; nhánh Logging/Audit của TC không kiểm được | PO / chủ môi trường |
 | AMB-SYS-03 | 5 module đang **0 bản ghi** (Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base) — chưa thấy màn chi tiết; môi trường dùng chung nên không tự tạo | `TICK` · `SUBS` · `CRN` · `EREQ` · `KBASE` recon thiếu màn chi tiết | PO / QA Lead |
 | AMB-SYS-04 | Năng lực QA (gọi API · CSDL · tầng tích hợp · DevTools) chưa được xác nhận | Nhánh Vòng 3 của mọi bộ TC | QA Lead |
-| AMB-LOGIN-03 | Contact khách hàng có đăng nhập được vào `/admin` không? | `LOGIN` — bảo mật phân tách 2 cổng | PO / Dev |
-| AMB-LOGIN-05 | Forgot Password bỏ trống trả "Email not found" thay vì thông báo bắt buộc | `LOGIN` — nghi lỗi | PO / Dev |
-| AMB-LOGIN-06 | Forgot Password tiết lộ email có tồn tại hay không | `LOGIN` — bảo mật | PO / Dev |
-| AMB-LOGIN-10 | Chính sách khoá tài khoản / giới hạn đăng nhập sai | `LOGIN` — chống brute-force | PO / Dev |
-| AMB-LOGIN-12 | Cookie `autologin` có khôi phục phiên không, hạn 62 ngày có đúng cấu hình? | `LOGIN` — REQ-LOGIN-16 ⚪ | Dev |
+
+> `LOGIN`: 5 AMB 🔴 (AMB-LOGIN-03, 05, 06, 10, 12) đã chuyển ⏭️ ngày 05-11-2026 — user chốt test theo Assumption tạm. **Chưa có câu trả lời thật**, rủi ro được chấp nhận; xem [Impact Report](login/impact/impact_LOGIN-ASSUMPTIONS-05112026.md).
 
 ## 4. Cấu trúc thư mục chuẩn
 
@@ -112,3 +109,4 @@ docs/requirements/
 | 02-11-2026 | Khởi tạo danh mục — 24 module (22 ⬜ · 2 ⏸️), cấp 24 prefix. Bước 1 đối chiếu: chưa có `docs/requirements/` từ trước → không có lệch | `/discover-system` mode UI — khu admin, Chrome local, 25 ảnh evidence |
 | 02-11-2026 | `LOGIN` → ✅: phát hành `login/REQUIREMENTS_LOGIN_SUMMARY.md` + `login/web/` — REQ-LOGIN-01 → 28 · 18 AMB · 6 RISK · 5 Story | `/generate-requirements-from-website login` |
 | 05-11-2026 | User trả lời AMB-LOGIN-01: tạm thời hệ thống chỉ có role admin → AMB-LOGIN-01, AMB-LOGIN-02, AMB-SYS-02 ✅, gỡ khỏi mục 3. AMB-SYS-01 viết lại: bỏ giả định "thiếu quyền Super Admin" | `/update-requirements-from-ticket` |
+| 05-11-2026 | `LOGIN`: user chốt dùng Assumption tạm cho 16 AMB còn treo → ⏭️. Thêm REQ-LOGIN-29 → 34 ⚪. Mã kế tiếp `REQ-LOGIN-35` | `/update-requirements-from-ticket` |
