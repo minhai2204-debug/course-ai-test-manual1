@@ -17,7 +17,7 @@
 
 ### Vùng chưa xác minh
 - Không có bản ghi → chưa thấy màn chi tiết
-- Hành vi tích hợp Stripe (tạo subscription, đồng bộ trạng thái) — chưa xác minh, phụ thuộc AMB-SYS-04
+- Hành vi tích hợp Stripe (tạo subscription, đồng bộ trạng thái) — không kiểm được: QA không có quyền kiểm tầng tích hợp (AMB-SYS-04 ✅)
 
 ### Evidence
 

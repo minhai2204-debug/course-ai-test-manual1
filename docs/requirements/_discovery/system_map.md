@@ -156,7 +156,7 @@ Lead (LEAD) ─❔→ Customer (CUST) ◄── Contact (gộp trong CUST)    Pr
 **Phát hiện network cấp hệ thống:**
 - Tài nguyên tĩnh mang `?v=3.1.6` → phiên bản ứng dụng
 - Bảng danh sách: DataTables server-side `POST /admin/<module>/table` (quan sát ở `clients`; các module khác kiểm khi recon)
-- Không có REST API JSON quan sát được → nhánh API của TC phụ thuộc AMB-SYS-04
+- Không có REST API JSON quan sát được → QA không gọi API trực tiếp, nhánh API của TC ghi là không kiểm được (AMB-SYS-04 ✅)
 
 ## 5. Ma trận phân quyền sơ bộ (cấp module)
 
@@ -210,6 +210,7 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | 02-11-2026 | Recon module `LOGIN` | `/generate-requirements-from-website login` | Lệch so với bản đồ: ước 15–20 REQ, thực tế **28 REQ** (gồm Forgot Password, đăng xuất, cookie ghi nhớ, bảo vệ route). Route và ranh giới module không đổi | UI thực tế |
 | 05-11-2026 | Cập nhật theo trả lời của user | `/update-requirements-from-ticket` | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin: AMB-SYS-02 ✅, cột Super Admin + role khác thành không áp dụng, AMB-SYS-01 viết lại. Danh sách module không đổi | User cung cấp — chưa xác minh UI |
 | 05-11-2026 | Cập nhật theo trả lời của user | Trả lời trực tiếp | AMB-SYS-01 ✅ tài khoản `.env` không được phép vào khu Setup. AMB-SYS-03 ✅ được tạo dữ liệu thử. Danh sách module không đổi | User cung cấp |
+| 05-11-2026 | Cập nhật theo trả lời của user | Trả lời trực tiếp | AMB-SYS-04 ✅ chốt năng lực QA. Danh sách module không đổi | User cung cấp |
 
 ## Ambiguity & Risk cấp hệ thống
 
@@ -218,7 +219,7 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | AMB-SYS-01 | Ambiguity | Tài khoản admin trong `.env` bị chặn ở khu Setup / Staff / Roles / Activity Log → ✅ Đã trả lời 05-11-2026: tài khoản này không được phép vào khu Setup. `SETTING`, `STAFF` giữ ⏸️ Hoãn | 🔴 |
 | AMB-SYS-02 | Ambiguity | Danh sách role của hệ thống chưa biết → ✅ Đã trả lời 05-11-2026: tạm thời chỉ có role admin (chưa kiểm chứng trên UI vì `/admin/roles` bị chặn) | 🔴 |
 | AMB-SYS-03 | Ambiguity | 5 module đang **0 bản ghi**: Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base → ✅ Đã trả lời 05-11-2026: được tạo dữ liệu thử trên môi trường hiện tại khi recon | 🔴 |
-| AMB-SYS-04 | Ambiguity | Năng lực QA (API · CSDL · tích hợp · DevTools) chưa xác nhận | 🔴 |
+| AMB-SYS-04 | Ambiguity | Năng lực QA (API · CSDL · tích hợp · DevTools) chưa xác nhận → ✅ Đã trả lời 05-11-2026: có DevTools + quan sát network; không có quyền gọi API trực tiếp, CSDL, tầng tích hợp. Chi tiết ở `../README.md` | 🔴 |
 | RISK-SYS-01 | Risk | Môi trường dùng chung, dữ liệu do nhiều người tạo/sửa liên tục → số liệu Dashboard / Reports / bộ đếm summary biến động giữa các lần chạy; AC không được assert giá trị tuyệt đối | 🟡 |
 | RISK-SYS-02 | Risk | Dữ liệu master (tax, currency, payment mode, department…) chỉ sửa được ở Setup đang BLOCKED → không chủ động tạo được tiền điều kiện cho TC | 🟡 |
 | RISK-SYS-03 | Risk | Trạng thái hoá đơn có thể lệch giữa hai màn tổng hợp: báo cáo Sales ghi "Cancelled invoices are excluded" nhưng widget "Invoice overview" ở Dashboard không có Cancelled → tổng số Dashboard và Reports có thể không khớp | 🟡 |
