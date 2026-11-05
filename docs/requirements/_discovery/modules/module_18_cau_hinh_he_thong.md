@@ -6,7 +6,7 @@
 
 | Mục | Giá trị |
 |---|---|
-| Lý do BLOCKED | Tài khoản trong `.env` không phải Super Admin — menu Setup (`#setup-menu`) **rỗng**, mọi route dưới đây → `/admin/access_denied` |
+| Lý do BLOCKED | Tài khoản trong `.env` bị chặn — menu Setup (`#setup-menu`) **rỗng**, mọi route dưới đây → `/admin/access_denied` |
 | Route đã thử (02-11-2026) | `/admin/settings` · `/admin/utilities/activity_log` · `/admin/emails` · `/admin/custom_fields` · `/admin/departments` · `/admin/currencies` · `/admin/taxes` · `/admin/paymentmodes` → **Access denied** · `/admin/modules` → chuyển về Dashboard |
 | Nguồn route | Thử điều hướng trực tiếp (URL chỉ đọc). Route trả `access_denied` thay vì 404 → có tồn tại |
 | Loại màn hình | ❔ chưa thấy UI |
@@ -17,7 +17,7 @@
 Toàn bộ module — **route tồn tại nhưng bị chặn quyền**, chưa nhìn thấy nội dung. Danh sách route ở trên là các route đã thử, chưa chắc đủ toàn bộ khu Setup.
 
 ### Mở khoá
-AMB-SYS-01 — cần tài khoản Super Admin. Có account → chạy `/discover-system` mode ADD cho module này trước khi recon.
+AMB-SYS-01 — cần tài khoản mở được khu này. Có account → chạy `/discover-system` mode ADD cho module này trước khi recon.
 
 ### Evidence
 

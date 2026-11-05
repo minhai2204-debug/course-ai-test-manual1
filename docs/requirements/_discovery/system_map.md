@@ -11,7 +11,7 @@
 | Mode · Mặt | **UI** (user chỉ định) · **Web** — 1 mặt |
 | Hệ thống | Perfex CRM **3.1.6** (đọc từ tham số `?v=3.1.6` của tài nguyên tĩnh) — bản demo dùng cho khoá học |
 | URL · tài khoản | Lưu ở `.env` — không ghi vào tài liệu |
-| Role đã dùng | 1 tài khoản admin (`user-id-2` trong `body.className`) — **không phải Super Admin**: menu Setup rỗng, khu cấu hình trả `Access denied` |
+| Role đã dùng | 1 tài khoản admin (`user-id-2` trong `body.className`) — menu Setup rỗng, khu cấu hình trả `Access denied`. User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin |
 | Đăng nhập | User tự đăng nhập trong cửa sổ Chrome (agent không nhập mật khẩu trên host không phải local/staging). Trang đăng nhập chụp trong browser context không cookie — không đăng xuất phiên đang dùng |
 | Môi trường | 🔒 **Dùng chung** — toàn bộ khảo sát **chỉ đọc**: không tạo / sửa / xoá, không bấm Save. Có dữ liệu của người khác (bộ lọc `auto_filter_tc029_*`, ~2.800 khách hàng) |
 | Phạm vi crawl | Khu admin `/admin/*`: 14 mục sidebar cấp 1 + 15 mục cấp 2 · menu header (Quick create, Profile, Language, Todo, Notifications) · `a[href]` trên Dashboard · 2 màn chi tiết (Customer, Project) · 11 route khu Setup thử bằng điều hướng trực tiếp (chỉ đọc) |
@@ -160,16 +160,16 @@ Lead (LEAD) ─❔→ Customer (CUST) ◄── Contact (gộp trong CUST)    Pr
 
 ## 5. Ma trận phân quyền sơ bộ (cấp module)
 
-Chỉ có **1 tài khoản**. Danh sách role của hệ thống **chưa biết** (`/admin/roles` → Access denied).
+Chỉ có **1 tài khoản**. User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin (`/admin/roles` vẫn Access denied nên chưa tự kiểm chứng được trên UI).
 
-| Module | Admin (tài khoản `.env`, không phải Super Admin) | Super Admin | Role khác |
+| Module | Admin (tài khoản `.env`) | Super Admin | Role khác |
 |---|---|---|---|
-| 22 module từ `LOGIN` → `PROF` | ✅ Xem được trang danh sách (chưa thử tạo/sửa/xoá — môi trường dùng chung) | ❔ | ❔ |
-| `SETTING` | ❌ Access denied (đã kiểm chứng 10 route) | ❔ | ❔ |
-| `STAFF` | ❌ Access denied (`/admin/staff`, `/admin/roles`) | ❔ | ❔ |
-| Activity Log (thuộc `SETTING`) | ❌ Access denied | ❔ | ❔ |
+| 22 module từ `LOGIN` → `PROF` | ✅ Xem được trang danh sách (chưa thử tạo/sửa/xoá — môi trường dùng chung) | — | — |
+| `SETTING` | ❌ Access denied (đã kiểm chứng 10 route) | — | — |
+| `STAFF` | ❌ Access denied (`/admin/staff`, `/admin/roles`) | — | — |
+| Activity Log (thuộc `SETTING`) | ❌ Access denied | — | — |
 
-**Đã kiểm chứng: 24 ô · Suy diễn: 0 ô · Chưa rõ: toàn bộ cột Super Admin + role khác** (AMB-SYS-01, AMB-SYS-02).
+**Đã kiểm chứng: 24 ô · Suy diễn: 0 ô · Không áp dụng: toàn bộ cột Super Admin + role khác** (user xác nhận 05-11-2026 — AMB-SYS-02; có thêm role thì mở lại).
 > ✅ ở đây chỉ nghĩa là **mở được trang**. Quyền tạo/sửa/xoá chưa kiểm — không được làm tròn thành "có toàn quyền".
 
 ## 6. Thứ tự khảo sát đã chốt (02-11-2026)
@@ -200,7 +200,7 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | 20 | `KBASE` | 0 bài viết | `/generate-requirements-from-website knowledge_base` |
 | 21 | `UTIL` | | `/generate-requirements-from-website utilities` |
 | 22 | `PROF` | | `/generate-requirements-from-website profile` |
-| — | `SETTING` · `STAFF` | **BLOCKED** — chờ tài khoản Super Admin (AMB-SYS-01) | — |
+| — | `SETTING` · `STAFF` | **BLOCKED** — tài khoản `.env` bị Access denied (AMB-SYS-01) | — |
 
 ## 7. Nhật ký khám phá
 
@@ -208,13 +208,14 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 |---|---|---|---|---|
 | 02-11-2026 | UI · Web — Chrome local | Khu admin, 1 tài khoản admin (không phải Super Admin), viewport 1598×790 | 24 module · 24 prefix · 2 module BLOCKED · 25 ảnh evidence. Thay cho bản nháp cùng ngày khảo sát bằng Browser pane (không có ảnh, viewport hẹp) — bản nháp đã bỏ, không phát hành | UI thực tế — chỉ đọc |
 | 02-11-2026 | Recon module `LOGIN` | `/generate-requirements-from-website login` | Lệch so với bản đồ: ước 15–20 REQ, thực tế **28 REQ** (gồm Forgot Password, đăng xuất, cookie ghi nhớ, bảo vệ route). Route và ranh giới module không đổi | UI thực tế |
+| 05-11-2026 | Cập nhật theo trả lời của user | `/update-requirements-from-ticket` | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin: AMB-SYS-02 ✅, cột Super Admin + role khác thành không áp dụng, AMB-SYS-01 viết lại. Danh sách module không đổi | User cung cấp — chưa xác minh UI |
 
 ## Ambiguity & Risk cấp hệ thống
 
 | Mã | Loại | Nội dung | Mức |
 |---|---|---|---|
-| AMB-SYS-01 | Ambiguity | Xin tài khoản Super Admin — khu Setup / Staff / Roles / Activity Log bị chặn | 🔴 |
-| AMB-SYS-02 | Ambiguity | Danh sách role của hệ thống chưa biết | 🔴 |
+| AMB-SYS-01 | Ambiguity | Tài khoản admin trong `.env` bị chặn ở khu Setup / Staff / Roles / Activity Log, trong khi tạm thời hệ thống chỉ có role admin — tài khoản nào mở được các khu này, hay quyền của tài khoản hiện tại đang thiếu? | 🔴 |
+| AMB-SYS-02 | Ambiguity | Danh sách role của hệ thống chưa biết → ✅ Đã trả lời 05-11-2026: tạm thời chỉ có role admin (chưa kiểm chứng trên UI vì `/admin/roles` bị chặn) | 🔴 |
 | AMB-SYS-03 | Ambiguity | 5 module đang **0 bản ghi**: Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base — chưa thấy màn chi tiết; cần dữ liệu mẫu hoặc môi trường riêng được phép tạo | 🔴 |
 | AMB-SYS-04 | Ambiguity | Năng lực QA (API · CSDL · tích hợp · DevTools) chưa xác nhận | 🔴 |
 | RISK-SYS-01 | Risk | Môi trường dùng chung, dữ liệu do nhiều người tạo/sửa liên tục → số liệu Dashboard / Reports / bộ đếm summary biến động giữa các lần chạy; AC không được assert giá trị tuyệt đối | 🟡 |

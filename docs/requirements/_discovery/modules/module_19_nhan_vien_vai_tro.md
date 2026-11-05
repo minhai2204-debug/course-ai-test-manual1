@@ -6,19 +6,19 @@
 
 | Mục | Giá trị |
 |---|---|
-| Lý do BLOCKED | Tài khoản trong `.env` không phải Super Admin |
+| Lý do BLOCKED | Tài khoản trong `.env` bị `Access denied` |
 | Route đã thử (02-11-2026) | `/admin/staff` · `/admin/roles` → **Access denied** |
 | Nguồn route | Thử điều hướng trực tiếp (URL chỉ đọc). Route trả `access_denied` thay vì 404 → có tồn tại |
 | Dấu vết gián tiếp | Cột "Members" (Projects), "Assigned to" (Tasks), "Assigned" (Leads, Estimate Request), "Staff Member" (Timesheets) → nhân viên là entity được nhiều module tham chiếu |
 | Loại màn hình | ❔ chưa thấy UI |
 | Ước lượng | ❔ |
-| Risk | 🔴 — quản lý tài khoản và quyền; quyết định ma trận phân quyền của mọi module (AMB-SYS-02) |
+| Risk | 🔴 — quản lý tài khoản và quyền; quyết định ma trận phân quyền của mọi module (tạm thời chỉ có role admin — AMB-SYS-02 ✅) |
 
 ### Vùng chưa xác minh
 Toàn bộ module, kể cả danh sách role của hệ thống.
 
 ### Mở khoá
-AMB-SYS-01 — cần tài khoản Super Admin. Có account → chạy `/discover-system` mode ADD cho module này.
+AMB-SYS-01 — cần tài khoản mở được khu này. Có account → chạy `/discover-system` mode ADD cho module này.
 
 ### Evidence
 

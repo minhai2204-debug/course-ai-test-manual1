@@ -13,7 +13,7 @@
 | **Nền tảng** | Web ✅ · Android — chưa có · iOS — chưa có · API — chưa có |
 | **Dải mã đã dùng** | `REQ-LOGIN-01` → `REQ-LOGIN-28` · `AMB-LOGIN-01` → `AMB-LOGIN-18` · `RISK-LOGIN-01` → `RISK-LOGIN-06` (đợt 1: UI recon 02-11-2026) |
 | **Mã kế tiếp** | Đợt phân tích sau bắt đầu từ `REQ-LOGIN-29` · `AMB-LOGIN-19` · `RISK-LOGIN-07` — **KHÔNG đánh lại từ 01** |
-| **Nguồn** | Khảo sát UI thực tế (mode UI theo chỉ định của user — không dùng tài liệu) |
+| **Nguồn** | Khảo sát UI thực tế (mode UI theo chỉ định của user — không dùng tài liệu) · trả lời của user cho AMB-LOGIN-01 (05-11-2026) |
 | **Môi trường** | 🔒 Dùng chung — không đăng nhập sai bằng email thật (tránh khoá tài khoản chung), không gửi email đặt lại tới hộp thư thật |
 | **Ngày khảo sát** | 02-11-2026 |
 
@@ -44,12 +44,12 @@ Không áp dụng — module mới khảo sát trên Web. Khi khảo sát app/AP
 
 | Hành động | Admin (tài khoản `.env`) | Super Admin | Nhân viên role khác | Contact khách hàng |
 |---|---|---|---|---|
-| Đăng nhập vào khu admin | ✅ | ❔ | ❔ | ❔ |
-| Yêu cầu đặt lại mật khẩu (email tồn tại) | ❔ | ❔ | ❔ | ❔ |
-| Đăng xuất | ✅ | ❔ | ❔ | ❔ |
+| Đăng nhập vào khu admin | ✅ | — | — | ❔ |
+| Yêu cầu đặt lại mật khẩu (email tồn tại) | ❔ | — | — | ❔ |
+| Đăng xuất | ✅ | — | — | ❔ |
 
-Tổng 12 ô = Đã kiểm chứng 2 · Suy diễn 0 · Chưa rõ 10 · Không áp dụng 0.
-Ô [Yêu cầu đặt lại mật khẩu × Admin] là ❔ vì cố ý không gửi email đặt lại tới hộp thư thật của tài khoản dùng chung (AMB-LOGIN-13). Super Admin (AMB-LOGIN-01), nhân viên role khác (AMB-LOGIN-02), Contact khách hàng (AMB-LOGIN-03) chưa có account. Danh sách role của hệ thống chưa biết (AMB-SYS-02).
+Tổng 12 ô = Đã kiểm chứng 2 · Suy diễn 0 · Chưa rõ 4 · Không áp dụng 6.
+Ô "không áp dụng" là toàn bộ cột Super Admin và Nhân viên role khác (6 ô) — User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin (AMB-LOGIN-01, AMB-LOGIN-02). Có thêm role thì phải mở lại hai cột này. Ô [Yêu cầu đặt lại mật khẩu × Admin] là ❔ vì cố ý không gửi email đặt lại tới hộp thư thật của tài khoản dùng chung (AMB-LOGIN-13). Contact khách hàng chưa có account (AMB-LOGIN-03).
 
 ## 4. Ma trận Trạng thái phiên
 
@@ -70,8 +70,8 @@ Không có entity mang status flow. Bảng dưới mô tả **trạng thái phi�
 
 | Mã | Câu hỏi | Nguy cơ | Mức độ | Assumption tạm | Trạng thái | Kết luận |
 |---|---|---|---|---|---|---|
-| AMB-LOGIN-01 | Xin account Super Admin để kiểm chứng 3 ô phân quyền đang ❔ (gắn AMB-SYS-01) | Không biết Super Admin có luồng đăng nhập khác (VD bắt buộc 2FA) | 🔴 | Giống Admin | ❓ Chờ trả lời | — |
-| AMB-LOGIN-02 | Xin account nhân viên role khác để kiểm chứng 3 ô phân quyền (gắn AMB-SYS-02) | Không biết nhân viên bị vô hiệu / role hạn chế có đăng nhập được không | 🔴 | Đăng nhập được, vào Dashboard | ❓ Chờ trả lời | — |
+| AMB-LOGIN-01 | Xin account Super Admin để kiểm chứng 3 ô phân quyền đang ❔ (gắn AMB-SYS-01) | Không biết Super Admin có luồng đăng nhập khác (VD bắt buộc 2FA) | 🔴 | Giống Admin | ✅ Đã trả lời 05-11-2026 | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin — không có role Super Admin riêng, cột Super Admin thành không áp dụng. Kết luận mang tính tạm thời: có thêm role thì mở lại. Việc tài khoản admin vẫn bị chặn ở khu Setup tách sang AMB-SYS-01 |
+| AMB-LOGIN-02 | Xin account nhân viên role khác để kiểm chứng 3 ô phân quyền (gắn AMB-SYS-02) | Không biết nhân viên bị vô hiệu / role hạn chế có đăng nhập được không | 🔴 | Đăng nhập được, vào Dashboard | ✅ Đã trả lời 05-11-2026 | Cùng câu trả lời với AMB-LOGIN-01: chưa có role nhân viên nào khác, cột này thành không áp dụng. Có thêm role thì mở lại |
 | AMB-LOGIN-03 | Contact của khách hàng có đăng nhập được vào `/admin` bằng tài khoản cổng khách hàng không? | Lỗ hổng phân tách hai cổng nếu đăng nhập được | 🔴 | Không đăng nhập được — "Invalid email or password" | ❓ Chờ trả lời | — |
 | AMB-LOGIN-04 | Khi bỏ trống cả hai ô, thông báo Password hiện **trước** thông báo Email — ngược thứ tự ô trên form. Cố ý? | TC assert thứ tự sẽ đỏ nếu dev sửa | 🟡 | Không assert thứ tự, chỉ assert có đủ 2 thông báo | ❓ Chờ trả lời | — |
 | AMB-LOGIN-05 | Forgot Password bỏ trống Email trả **"Email not found"** thay vì thông báo bắt buộc nhập. Thiếu validation required? | Thông báo gây hiểu nhầm cho người dùng | 🔴 | Ghi nhận như hành vi hiện tại (REQ-LOGIN-20), nghi là lỗi | ❓ Chờ trả lời | — |
@@ -133,4 +133,5 @@ Kiểm: AMB 14 (Story) + 4 (Epic) = 18 ✔ · RISK 6 + 0 = 6 ✔
 
 | Ngày | Nguồn | REQ ảnh hưởng | Loại | Tóm tắt thay đổi | TC cần xử lý |
 |---|---|---|---|---|---|
+| 05-11-2026 | User trả lời AMB-LOGIN-01 | Không REQ nào đổi · AMB-LOGIN-01, 02 ❓ → ✅ | ✏️ Biên tập | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin: 6 ô phân quyền chuyển sang không áp dụng. Xem [impact/impact_AMB-LOGIN-01.md](impact/impact_AMB-LOGIN-01.md) | Không tác động — chưa có bộ TC |
 | 02-11-2026 | UI recon | REQ-LOGIN-01 → 28 · AMB-LOGIN-01 → 18 · RISK-LOGIN-01 → 06 | 🟢 Thêm | Khởi tạo tài liệu từ khảo sát UI thực tế trên Chrome local (mode UI) | — (viết mới) |
