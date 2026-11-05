@@ -13,7 +13,7 @@
 | URL · tài khoản | Lưu ở `.env` — không ghi vào tài liệu |
 | Role đã dùng | 1 tài khoản admin (`user-id-2` trong `body.className`) — menu Setup rỗng, khu cấu hình trả `Access denied`. User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin |
 | Đăng nhập | User tự đăng nhập trong cửa sổ Chrome (agent không nhập mật khẩu trên host không phải local/staging). Trang đăng nhập chụp trong browser context không cookie — không đăng xuất phiên đang dùng |
-| Môi trường | 🔒 **Dùng chung** — toàn bộ khảo sát **chỉ đọc**: không tạo / sửa / xoá, không bấm Save. Có dữ liệu của người khác (bộ lọc `auto_filter_tc029_*`, ~2.800 khách hàng) |
+| Môi trường | 🔒 **Dùng chung**. Đợt khảo sát 02-11-2026 **chỉ đọc**: không tạo / sửa / xoá, không bấm Save. Từ 05-11-2026 user cho phép **tạo dữ liệu thử** ngay trên môi trường này (AMB-SYS-03): chỉ tạo mới, đặt tên nhận diện được; không sửa / xoá bản ghi có sẵn. Có dữ liệu của người khác (bộ lọc `auto_filter_tc029_*`, ~2.800 khách hàng) |
 | Phạm vi crawl | Khu admin `/admin/*`: 14 mục sidebar cấp 1 + 15 mục cấp 2 · menu header (Quick create, Profile, Language, Todo, Notifications) · `a[href]` trên Dashboard · 2 màn chi tiết (Customer, Project) · 11 route khu Setup thử bằng điều hướng trực tiếp (chỉ đọc) |
 | Ngoài phạm vi | **Cổng khách hàng** — URL/tài khoản khác, user cung cấp sau → mode ADD |
 | Tài liệu QA | Không nạp (mode UI). Repo có `SRS_Login_Module.md` / `docs/SRS_Login_Module.txt` — dùng được khi recon `LOGIN` |
@@ -164,7 +164,7 @@ Chỉ có **1 tài khoản**. User xác nhận 05-11-2026: tạm thời hệ th�
 
 | Module | Admin (tài khoản `.env`) | Super Admin | Role khác |
 |---|---|---|---|
-| 22 module từ `LOGIN` → `PROF` | ✅ Xem được trang danh sách (chưa thử tạo/sửa/xoá — môi trường dùng chung) | — | — |
+| 22 module từ `LOGIN` → `PROF` | ✅ Xem được trang danh sách (chưa thử tạo/sửa/xoá) | — | — |
 | `SETTING` | ❌ Access denied (đã kiểm chứng 10 route) | — | — |
 | `STAFF` | ❌ Access denied (`/admin/staff`, `/admin/roles`) | — | — |
 | Activity Log (thuộc `SETTING`) | ❌ Access denied | — | — |
@@ -187,20 +187,20 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | 7 | `EST` | | `/generate-requirements-from-website estimates` |
 | 8 | `INV` | Tiền — risk cao | `/generate-requirements-from-website invoices` |
 | 9 | `PAY` | Phụ thuộc Invoice | `/generate-requirements-from-website payments` |
-| 10 | `CRN` | Phụ thuộc Invoice · 0 bản ghi | `/generate-requirements-from-website credit_notes` |
+| 10 | `CRN` | Phụ thuộc Invoice · 0 bản ghi — tạo dữ liệu thử khi recon | `/generate-requirements-from-website credit_notes` |
 | 11 | `CTR` | | `/generate-requirements-from-website contracts` |
 | 12 | `LEAD` | | `/generate-requirements-from-website leads` |
 | 13 | `EXP` | | `/generate-requirements-from-website expenses` |
-| 14 | `SUBS` | 0 bản ghi | `/generate-requirements-from-website subscriptions` |
-| 15 | `TICK` | 0 bản ghi | `/generate-requirements-from-website tickets` |
-| 16 | `EREQ` | 0 bản ghi | `/generate-requirements-from-website estimate_request` |
+| 14 | `SUBS` | 0 bản ghi — tạo dữ liệu thử khi recon | `/generate-requirements-from-website subscriptions` |
+| 15 | `TICK` | 0 bản ghi — tạo dữ liệu thử khi recon | `/generate-requirements-from-website tickets` |
+| 16 | `EREQ` | 0 bản ghi — tạo dữ liệu thử khi recon | `/generate-requirements-from-website estimate_request` |
 | 17 | `DASH` | Tổng hợp từ module khác → khảo sát sau | `/generate-requirements-from-website dashboard` |
 | 18 | `RPT` | Tổng hợp từ module khác | `/generate-requirements-from-website reports` |
 | 19 | `CAL` | | `/generate-requirements-from-website calendar` |
-| 20 | `KBASE` | 0 bài viết | `/generate-requirements-from-website knowledge_base` |
+| 20 | `KBASE` | 0 bài viết — tạo dữ liệu thử khi recon | `/generate-requirements-from-website knowledge_base` |
 | 21 | `UTIL` | | `/generate-requirements-from-website utilities` |
 | 22 | `PROF` | | `/generate-requirements-from-website profile` |
-| — | `SETTING` · `STAFF` | **BLOCKED** — tài khoản `.env` bị Access denied (AMB-SYS-01) | — |
+| — | `SETTING` · `STAFF` | **BLOCKED** — tài khoản `.env` không được phép vào (AMB-SYS-01 ✅) | — |
 
 ## 7. Nhật ký khám phá
 
@@ -209,14 +209,15 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | 02-11-2026 | UI · Web — Chrome local | Khu admin, 1 tài khoản admin (không phải Super Admin), viewport 1598×790 | 24 module · 24 prefix · 2 module BLOCKED · 25 ảnh evidence. Thay cho bản nháp cùng ngày khảo sát bằng Browser pane (không có ảnh, viewport hẹp) — bản nháp đã bỏ, không phát hành | UI thực tế — chỉ đọc |
 | 02-11-2026 | Recon module `LOGIN` | `/generate-requirements-from-website login` | Lệch so với bản đồ: ước 15–20 REQ, thực tế **28 REQ** (gồm Forgot Password, đăng xuất, cookie ghi nhớ, bảo vệ route). Route và ranh giới module không đổi | UI thực tế |
 | 05-11-2026 | Cập nhật theo trả lời của user | `/update-requirements-from-ticket` | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin: AMB-SYS-02 ✅, cột Super Admin + role khác thành không áp dụng, AMB-SYS-01 viết lại. Danh sách module không đổi | User cung cấp — chưa xác minh UI |
+| 05-11-2026 | Cập nhật theo trả lời của user | Trả lời trực tiếp | AMB-SYS-01 ✅ tài khoản `.env` không được phép vào khu Setup. AMB-SYS-03 ✅ được tạo dữ liệu thử. Danh sách module không đổi | User cung cấp |
 
 ## Ambiguity & Risk cấp hệ thống
 
 | Mã | Loại | Nội dung | Mức |
 |---|---|---|---|
-| AMB-SYS-01 | Ambiguity | Tài khoản admin trong `.env` bị chặn ở khu Setup / Staff / Roles / Activity Log, trong khi tạm thời hệ thống chỉ có role admin — tài khoản nào mở được các khu này, hay quyền của tài khoản hiện tại đang thiếu? | 🔴 |
+| AMB-SYS-01 | Ambiguity | Tài khoản admin trong `.env` bị chặn ở khu Setup / Staff / Roles / Activity Log → ✅ Đã trả lời 05-11-2026: tài khoản này không được phép vào khu Setup. `SETTING`, `STAFF` giữ ⏸️ Hoãn | 🔴 |
 | AMB-SYS-02 | Ambiguity | Danh sách role của hệ thống chưa biết → ✅ Đã trả lời 05-11-2026: tạm thời chỉ có role admin (chưa kiểm chứng trên UI vì `/admin/roles` bị chặn) | 🔴 |
-| AMB-SYS-03 | Ambiguity | 5 module đang **0 bản ghi**: Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base — chưa thấy màn chi tiết; cần dữ liệu mẫu hoặc môi trường riêng được phép tạo | 🔴 |
+| AMB-SYS-03 | Ambiguity | 5 module đang **0 bản ghi**: Tickets · Subscriptions · Credit Notes · Estimate Request · Knowledge Base → ✅ Đã trả lời 05-11-2026: được tạo dữ liệu thử trên môi trường hiện tại khi recon | 🔴 |
 | AMB-SYS-04 | Ambiguity | Năng lực QA (API · CSDL · tích hợp · DevTools) chưa xác nhận | 🔴 |
 | RISK-SYS-01 | Risk | Môi trường dùng chung, dữ liệu do nhiều người tạo/sửa liên tục → số liệu Dashboard / Reports / bộ đếm summary biến động giữa các lần chạy; AC không được assert giá trị tuyệt đối | 🟡 |
 | RISK-SYS-02 | Risk | Dữ liệu master (tax, currency, payment mode, department…) chỉ sửa được ở Setup đang BLOCKED → không chủ động tạo được tiền điều kiện cho TC | 🟡 |

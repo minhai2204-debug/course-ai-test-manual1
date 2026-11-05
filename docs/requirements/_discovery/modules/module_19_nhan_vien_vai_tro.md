@@ -6,7 +6,7 @@
 
 | Mục | Giá trị |
 |---|---|
-| Lý do BLOCKED | Tài khoản trong `.env` bị `Access denied` |
+| Lý do BLOCKED | Tài khoản trong `.env` không được phép vào (user xác nhận 05-11-2026), đo được `Access denied` |
 | Route đã thử (02-11-2026) | `/admin/staff` · `/admin/roles` → **Access denied** |
 | Nguồn route | Thử điều hướng trực tiếp (URL chỉ đọc). Route trả `access_denied` thay vì 404 → có tồn tại |
 | Dấu vết gián tiếp | Cột "Members" (Projects), "Assigned to" (Tasks), "Assigned" (Leads, Estimate Request), "Staff Member" (Timesheets) → nhân viên là entity được nhiều module tham chiếu |
@@ -18,7 +18,7 @@
 Toàn bộ module, kể cả danh sách role của hệ thống.
 
 ### Mở khoá
-AMB-SYS-01 — cần tài khoản mở được khu này. Có account → chạy `/discover-system` mode ADD cho module này.
+AMB-SYS-01 ✅ — tài khoản `.env` không được phép vào. Chỉ mở lại khi có tài khoản được phép: có account → chạy `/discover-system` mode ADD cho module này.
 
 ### Evidence
 
