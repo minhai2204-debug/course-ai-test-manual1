@@ -211,6 +211,7 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 | 05-11-2026 | Cập nhật theo trả lời của user | `/update-requirements-from-ticket` | User xác nhận 05-11-2026: tạm thời hệ thống chỉ có role admin: AMB-SYS-02 ✅, cột Super Admin + role khác thành không áp dụng, AMB-SYS-01 viết lại. Danh sách module không đổi | User cung cấp — chưa xác minh UI |
 | 05-11-2026 | Cập nhật theo trả lời của user | Trả lời trực tiếp | AMB-SYS-01 ✅ tài khoản `.env` không được phép vào khu Setup. AMB-SYS-03 ✅ được tạo dữ liệu thử. Danh sách module không đổi | User cung cấp |
 | 05-11-2026 | Cập nhật theo trả lời của user | Trả lời trực tiếp | AMB-SYS-04 ✅ chốt năng lực QA. Danh sách module không đổi | User cung cấp |
+| 16-11-2026 | Recon module `CUST` | `/generate-requirements-from-website CUST` | Lệch so với bản đồ: ước 60–80 REQ, thực tế **115 REQ / 7 Story** (phạm vi "lõi + tab riêng"; 11 tab chứng từ chỉ ở mức hiển thị). Tab con thứ 3 `Customer Admins` chỉ có ở form **sửa**, form tạo có 2 tab. Thêm route `/admin/clients/all_contacts` (trang Contacts tổng) và `/admin/clients/import` đã mở. Danh sách nhân viên (Assign Admin) có nhân viên tên "Project Manager" — liên quan AMB-LOGIN-24. Ranh giới module, prefix không đổi. Bảng *Bản đồ tài liệu*: `CUST` ⬜ → ✅, đồng thời sửa `LOGIN` ⬜ → ✅ (bị sót từ 02-11-2026, danh mục đã ghi ✅) | UI thực tế |
 
 ## Ambiguity & Risk cấp hệ thống
 
@@ -228,8 +229,8 @@ Xếp theo *module được phụ thuộc trước, risk sau*:
 
 | File | Module bao phủ | Prefix | Trạng thái recon |
 |---|---|---|---|
-| [modules/module_01_dang_nhap.md](modules/module_01_dang_nhap.md) | Đăng nhập | `LOGIN` | ⬜ |
-| [modules/module_02_khach_hang.md](modules/module_02_khach_hang.md) | Khách hàng | `CUST` | ⬜ |
+| [modules/module_01_dang_nhap.md](modules/module_01_dang_nhap.md) | Đăng nhập | `LOGIN` | ✅ |
+| [modules/module_02_khach_hang.md](modules/module_02_khach_hang.md) | Khách hàng | `CUST` | ✅ |
 | [modules/module_03_hang_hoa.md](modules/module_03_hang_hoa.md) | Hàng hoá | `ITEM` | ⬜ |
 | [modules/module_04_du_an_cong_viec.md](modules/module_04_du_an_cong_viec.md) | Dự án · Công việc | `PRJ` · `TASK` | ⬜ ⬜ |
 | [modules/module_05_de_xuat_bao_gia.md](modules/module_05_de_xuat_bao_gia.md) | Đề xuất · Báo giá | `PROP` · `EST` | ⬜ ⬜ |

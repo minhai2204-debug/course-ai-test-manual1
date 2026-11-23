@@ -1,2 +1,4 @@
 .env
 reqs/
+reports/
+.playwright-mcp/
