@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@playwright/mcp@latest",
+        "--browser=chrome",
+        "--viewport-size=1600,750",
+        "--config=.claude/playwright-mcp-config.json"
+      ]
+    },
+    "playwright-mobile": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@playwright/mcp@latest",
+        "--device=Pixel 7",
+        "--isolated"
+      ]
+    }
+  }
+}
